@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#111827">
+<meta name="description" content="Personal lean bulk tracker for calories, protein, water, sleep, weight, workouts and supplements.">
+<link rel="manifest" href="manifest.json">
+<title>Lean Bulk Tracker</title>
+<style>
+:root{--bg:#0b1020;--panel:#151d30;--panel2:#1d2940;--text:#f3f6ff;--muted:#9eabc5;--accent:#8be0b0;--accent2:#a7c7ff;--line:#2b3852;--warn:#ffd27d}
+*{box-sizing:border-box} body{margin:0;background:linear-gradient(160deg,#0b1020,#111a2d 65%,#0b1020);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;min-height:100vh}
+header{padding:22px 18px 12px;max-width:780px;margin:auto} h1{font-size:25px;margin:0 0 5px;letter-spacing:-.5px} .sub{color:var(--muted);font-size:13px}
+main{max-width:780px;margin:auto;padding:0 14px 36px}.hero{background:linear-gradient(130deg,#1c3c3a,#1b2943);border:1px solid #31534f;border-radius:20px;padding:17px;margin:8px 0 14px}
+.heroTop{display:flex;justify-content:space-between;gap:10px;align-items:start}.pill{font-size:11px;border-radius:999px;background:#ffffff12;padding:6px 9px;color:#d9ffea}
+.big{font-size:31px;font-weight:800;letter-spacing:-1px}.muted{color:var(--muted)} .small{font-size:12px;color:var(--muted)}
+.progress{height:8px;background:#ffffff1c;border-radius:20px;overflow:hidden;margin:10px 0 5px}.progress>div{height:100%;width:0;background:var(--accent);border-radius:20px;transition:width .2s}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:14px;min-width:0}.metricLabel{font-size:12px;color:var(--muted)}.metricValue{font-size:22px;font-weight:750;margin:4px 0}.metricTarget{font-size:11px;color:var(--muted)}
+section{margin-top:16px}.sectionHead{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:0 2px 9px}h2{font-size:17px;margin:0} .tag{font-size:11px;color:var(--accent);background:#8be0b015;padding:5px 8px;border-radius:999px}
+input,select,button{font:inherit} input,select{width:100%;background:#0e1627;color:var(--text);border:1px solid var(--line);border-radius:10px;padding:11px 10px;outline:none} input::placeholder{color:#71809b}
+label{display:block;color:var(--muted);font-size:12px;margin:0 0 5px}.formgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.field{min-width:0}.btn{border:0;border-radius:11px;padding:11px 13px;background:var(--accent);color:#0b1720;font-weight:750;cursor:pointer}.btn.secondary{background:var(--panel2);color:var(--text);border:1px solid var(--line)}.btn.danger{background:#492631;color:#ffdce2}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.full{width:100%}
+.foodRow,.logRow{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)}.foodRow:last-child,.logRow:last-child{border-bottom:0}.foodName{font-weight:650;font-size:13px}.foodMeta{font-size:11px;color:var(--muted);margin-top:2px}.numbers{text-align:right;white-space:nowrap;font-size:12px}.remove{border:1px solid var(--line);color:#ffb9c4;background:transparent;border-radius:8px;padding:5px 8px;margin-left:6px}
+.chips{display:flex;gap:7px;flex-wrap:wrap}.chip{background:var(--panel2);border:1px solid var(--line);border-radius:999px;padding:8px 11px;color:var(--text);font-size:12px;cursor:pointer}.chip:active,.btn:active{transform:scale(.98)}
+.checkline{display:flex;align-items:center;gap:9px;padding:9px 0;color:var(--text);font-size:13px}.checkline input{width:18px;height:18px;accent-color:var(--accent)}
+.notice{color:var(--muted);font-size:11px;line-height:1.5;margin-top:8px}.empty{color:var(--muted);font-size:12px;padding:12px 0}
+nav{position:sticky;bottom:0;background:#0b1020eF;backdrop-filter:blur(12px);border-top:1px solid var(--line);display:flex;justify-content:space-around;padding:10px 4px calc(10px + env(safe-area-inset-bottom));max-width:780px;margin:auto}nav a{font-size:11px;color:var(--muted);text-decoration:none;text-align:center;flex:1}nav span{display:block;font-size:18px;margin-bottom:2px}
+@media(min-width:600px){.grid{grid-template-columns:repeat(4,minmax(0,1fr))}.big{font-size:36px}}
+</style>
+</head>
+<body>
+<header>
+  <h1>💪 Lean Bulk Tracker</h1>
+  <div class="sub">Simple Telugu-English • Nee 59 kg → 72 kg journey</div>
+</header>
+<main>
+  <div class="hero">
+    <div class="heroTop"><div><div class="small">TODAY'S CALORIES</div><div class="big"><span id="calTotal">0</span> <span style="font-size:14px;font-weight:500">kcal</span></div></div><div class="pill" id="dateLabel">Today</div></div>
+    <div class="progress"><div id="calBar"></div></div>
+    <div class="small"><span id="calLeft">3000</span> kcal target remaining • Target 3,000 kcal</div>
+  </div>
+  <div class="grid">
+    <div class="card"><div class="metricLabel">🥚 Protein</div><div class="metricValue"><span id="proteinTotal">0</span> g</div><div class="progress"><div id="proteinBar" style="background:var(--accent2)"></div></div><div class="metricTarget">Target 125 g</div></div>
+    <div class="card"><div class="metricLabel">💧 Water</div><div class="metricValue"><span id="waterTotal">0</span> ml</div><div class="progress"><div id="waterBar"></div></div><div class="metricTarget">Target 3,000 ml*</div></div>
+    <div class="card"><div class="metricLabel">😴 Sleep</div><div class="metricValue"><span id="sleepTotal">—</span></div><div class="metricTarget">Adult target: 7–9 hrs</div></div>
+    <div class="card"><div class="metricLabel">⚖️ Weight</div><div class="metricValue"><span id="weightNow">59</span> kg</div><div class="metricTarget">Goal 72 kg</div></div>
+  </div>
+
+  <section id="food">
+    <div class="sectionHead"><h2>🍛 Food log</h2><span class="tag">Calories + protein</span></div>
+    <div class="card">
+      <div class="formgrid">
+        <div class="field"><label for="foodName">Food name</label><input id="foodName" placeholder="e.g. 2 eggs, rice"></div>
+        <div class="field"><label for="meal">Meal</label><select id="meal"><option>Breakfast</option><option>Snack</option><option>Lunch</option><option>Pre-workout</option><option>Dinner</option><option>Other</option></select></div>
+        <div class="field"><label for="foodCal">Calories (kcal)</label><input id="foodCal" type="number" min="0" placeholder="e.g. 250"></div>
+        <div class="field"><label for="foodProtein">Protein (g)</label><input id="foodProtein" type="number" min="0" step=".1" placeholder="e.g. 12"></div>
+      </div>
+      <div class="actions"><button class="btn full" id="addFood">+ Add food</button></div>
+      <div class="notice">Food calories/protein estimates ni package label or nutrition database tho check cheyyi. App automatic ga food nutrition guess cheyyadhu.</div>
+      <div id="foodList"></div>
+    </div>
+  </section>
+
+  <section id="water">
+    <div class="sectionHead"><h2>💧 Water tracker</h2><span class="tag">Tap to add</span></div>
+    <div class="card">
+      <div class="chips">
+        <button class="chip" data-water="150">+150 ml</button><button class="chip" data-water="250">+250 ml</button><button class="chip" data-water="500">+500 ml</button>
+        <button class="chip" id="undoWater">Undo last</button>
+      </div>
+      <div class="notice">*3 L is an example target, not a strict requirement. Heavy sweating/weather batti needs vary; force chesi water thaagaku.</div>
+    </div>
+  </section>
+
+  <section id="sleep">
+    <div class="sectionHead"><h2>😴 Sleep log</h2></div>
+    <div class="card">
+      <div class="formgrid">
+        <div class="field"><label for="bedtime">Bedtime</label><input id="bedtime" type="time" value="22:30"></div>
+        <div class="field"><label for="waketime">Wake-up time</label><input id="waketime" type="time" value="06:30"></div>
+        <div class="field"><label for="awakeMins">Awake during night (mins)</label><input id="awakeMins" type="number" min="0" value="0"></div>
+        <div class="field"><label for="sleepQuality">Sleep quality</label><select id="sleepQuality"><option>Good</option><option>Okay</option><option>Poor</option></select></div>
+      </div>
+      <div class="actions"><button class="btn full" id="saveSleep">Save sleep</button></div>
+      <div class="notice" id="sleepMsg">Enter bedtime and wake time, then save.</div>
+    </div>
+  </section>
+
+  <section id="weight">
+    <div class="sectionHead"><h2>⚖️ Weight progress</h2><span class="tag">59 → 72 kg</span></div>
+    <div class="card">
+      <div class="formgrid">
+        <div class="field"><label for="weightInput">Morning weight (kg)</label><input id="weightInput" type="number" step=".1" min="1" placeholder="e.g. 59.2"></div>
+        <div class="field"><label for="waistInput">Waist (optional cm)</label><input id="waistInput" type="number" step=".1" min="1" placeholder="optional"></div>
+      </div>
+      <div class="actions"><button class="btn full" id="saveWeight">Save today's weight</button></div>
+      <div id="weightHistory"></div>
+    </div>
+  </section>
+
+  <section id="workout">
+    <div class="sectionHead"><h2>🏋️ Workout & supplements</h2></div>
+    <div class="card">
+      <div class="field"><label for="workoutType">Today's workout</label><select id="workoutType"><option>Chest</option><option>Back</option><option>Shoulders</option><option>Legs</option><option>Arms</option><option>Full body</option><option>Cardio</option><option>Rest day</option></select></div>
+      <div class="field" style="margin-top:10px"><label for="workoutNotes">Exercises / notes</label><input id="workoutNotes" placeholder="e.g. bench press 3 x 8"></div>
+      <label class="checkline"><input id="creatineCheck" type="checkbox"> Creatine taken (usual maintenance dose per product/clinician guidance)</label>
+      <label class="checkline"><input id="preCheck" type="checkbox"> Pre-workout taken (label serving followed)</label>
+      <div class="actions"><button class="btn full" id="saveWorkout">Save workout & supplements</button></div>
+      <div id="workoutHistory"></div>
+      <div class="notice">Supplements checkbox is only a log, not a dosage recommendation. Check caffeine amount in pre-workout and avoid it near bedtime if it affects sleep.</div>
+    </div>
+  </section>
+
+  <section id="settings">
+    <div class="sectionHead"><h2>🎯 Targets & data</h2></div>
+    <div class="card">
+      <div class="formgrid">
+        <div class="field"><label for="calTarget">Calories target</label><input id="calTarget" type="number" value="3000" min="1"></div>
+        <div class="field"><label for="proteinTarget">Protein target (g)</label><input id="proteinTarget" type="number" value="125" min="1"></div>
+        <div class="field"><label for="waterTarget">Water target (ml)</label><input id="waterTarget" type="number" value="3000" min="1"></div>
+        <div class="field"><label for="goalWeight">Goal weight (kg)</label><input id="goalWeight" type="number" value="72" min="1" step=".1"></div>
+      </div>
+      <div class="actions"><button class="btn full" id="saveTargets">Save targets</button><button class="btn secondary full" id="exportData">Export backup (JSON)</button><button class="btn danger full" id="resetDay">Clear today's entries</button></div>
+      <div class="notice">Data is saved in this browser on this device. Clearing browser data or changing devices may remove it; export a backup regularly. This is a tracker, not medical advice.</div>
+    </div>
+  </section>
+</main>
+<nav><a href="#food"><span>🍛</span>Food</a><a href="#water"><span>💧</span>Water</a><a href="#sleep"><span>😴</span>Sleep</a><a href="#weight"><span>⚖️</span>Weight</a><a href="#workout"><span>🏋️</span>Workout</a></nav>
+<script>
+const $=id=>document.getElementById(id);
+const today=()=>new Date().toLocaleDateString('en-CA');
+const key=()=>`leanbulk_${today()}`;
+const defaultState=()=>({foods:[],water:[],sleep:null,weight:null,waist:null,workout:null,creatine:false,pre:false});
+let all=JSON.parse(localStorage.getItem('leanbulk_data')||'{}');
+let state=all[key()]||defaultState();
+let targets=JSON.parse(localStorage.getItem('leanbulk_targets')||'{"cal":3000,"protein":125,"water":3000,"goal":72}');
+function save(){all[key()]=state;localStorage.setItem('leanbulk_data',JSON.stringify(all));render();}
+function saveTargets(){targets={cal:+$('calTarget').value||3000,protein:+$('proteinTarget').value||125,water:+$('waterTarget').value||3000,goal:+$('goalWeight').value||72};localStorage.setItem('leanbulk_targets',JSON.stringify(targets));render();}
+function n(v){return Number(v)||0}
+function render(){
+ const cal=state.foods.reduce((s,f)=>s+f.cal,0), prot=state.foods.reduce((s,f)=>s+f.protein,0), water=state.water.reduce((s,x)=>s+x,0);
+ $('dateLabel').textContent=new Date().toLocaleDateString(undefined,{weekday:'short',month:'short',day:'numeric'});
+ $('calTotal').textContent=Math.round(cal);$('calLeft').textContent=Math.max(0,Math.round(targets.cal-cal)).toLocaleString();
+ $('calBar').style.width=Math.min(100,cal/targets.cal*100)+'%';$('proteinTotal').textContent=prot.toFixed(1).replace(/\.0$/,'');$('proteinBar').style.width=Math.min(100,prot/targets.protein*100)+'%';
+ $('waterTotal').textContent=water.toLocaleString();$('waterBar').style.width=Math.min(100,water/targets.water*100)+'%';
+ $('sleepTotal').textContent=state.sleep?`${state.sleep.hours} h`:'—';$('weightNow').textContent=state.weight??59;
+ $('foodList').innerHTML=state.foods.length?state.foods.map((f,i)=>`<div class="foodRow"><div><div class="foodName">${esc(f.name)} <span class="tag">${esc(f.meal)}</span></div><div class="foodMeta">${f.cal} kcal • ${f.protein} g protein</div></div><button class="remove" data-del="${i}">×</button></div>`).join(''):'<div class="empty">Inka food add cheyyaledhu. First meal add cheyyi.</div>';
+ document.querySelectorAll('[data-del]').forEach(b=>b.onclick=()=>{state.foods.splice(+b.dataset.del,1);save()});
+ $('sleepMsg').textContent=state.sleep?`Saved: ${state.sleep.hours} hours • Quality: ${state.sleep.quality}`:'Enter bedtime and wake time, then save.';
+ $('weightHistory').innerHTML=Object.keys(all).filter(k=>k.startsWith('leanbulk_')&&all[k].weight).sort().slice(-7).map(k=>`<div class="logRow"><span>${k.replace('leanbulk_','')}</span><strong>${all[k].weight} kg</strong></div>`).join('')||'<div class="empty">Weight history ikkada kanipisthundhi.</div>';
+ $('workoutHistory').innerHTML=state.workout?`<div class="logRow"><div><strong>${esc(state.workout.type)}</strong><div class="foodMeta">${esc(state.workout.notes||'No notes')}</div></div><div class="numbers">Creatine: ${state.creatine?'✓':'—'}<br>Pre-workout: ${state.pre?'✓':'—'}</div></div>`:'';
+}
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+$('addFood').onclick=()=>{const name=$('foodName').value.trim(),cal=n($('foodCal').value),protein=n($('foodProtein').value);if(!name||cal<0||protein<0){alert('Food name, calories and protein enter cheyyi.');return}state.foods.push({name,meal:$('meal').value,cal,protein});$('foodName').value='';$('foodCal').value='';$('foodProtein').value='';save();};
+document.querySelectorAll('[data-water]').forEach(b=>b.onclick=()=>{state.water.push(+b.dataset.water);save()});
+$('undoWater').onclick=()=>{state.water.pop();save()};
+$('saveSleep').onclick=()=>{const b=$('bedtime').value,w=$('waketime').value;if(!b||!w)return;let mins=(+w.slice(0,2)*60 + +w.slice(3))- (+b.slice(0,2)*60 + +b.slice(3));if(mins<=0)mins+=1440;mins=Math.max(0,mins-n($('awakeMins').value));state.sleep={hours:(mins/60).toFixed(1),quality:$('sleepQuality').value,bed:b,wake:w};save()};
+$('saveWeight').onclick=()=>{const v=n($('weightInput').value);if(v<=0){alert('Valid weight enter cheyyi.');return}state.weight=+v.toFixed(1);state.waist=n($('waistInput').value)||null;save();$('weightInput').value='';$('waistInput').value=''};
+$('saveWorkout').onclick=()=>{state.workout={type:$('workoutType').value,notes:$('workoutNotes').value.trim()};state.creatine=$('creatineCheck').checked;state.pre=$('preCheck').checked;save()};
+$('saveTargets').onclick=()=>{saveTargets();alert('Targets saved!')};
+$('exportData').onclick=()=>{const blob=new Blob([JSON.stringify({all,targets},null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='lean-bulk-backup.json';a.click();URL.revokeObjectURL(a.href)};
+$('resetDay').onclick=()=>{if(confirm('Clear today\\'s food, water, sleep, weight and workout entries?')){state=defaultState();save()}};
+$('calTarget').value=targets.cal;$('proteinTarget').value=targets.protein;$('waterTarget').value=targets.water;$('goalWeight').value=targets.goal;
+render();
+if('serviceWorker' in navigator && location.protocol.startsWith('http'))navigator.serviceWorker.register('./sw.js').catch(()=>{});
+</script>
+</body>
+</html>
