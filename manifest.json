@@ -1,0 +1,11 @@
+{
+  "name": "Lean Bulk Tracker",
+  "short_name": "Lean Bulk",
+  "description": "Track calories, protein, water, sleep, weight, workouts and supplements.",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#0b1020",
+  "theme_color": "#111827",
+  "orientation": "portrait",
+  "icons": []
+}
